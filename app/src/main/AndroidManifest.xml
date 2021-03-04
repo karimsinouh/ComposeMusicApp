@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicApp">
         <activity
-            android:name=".ui.theme.home.MainActivity"
+            android:name=".ui.home.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.MusicApp.NoActionBar">

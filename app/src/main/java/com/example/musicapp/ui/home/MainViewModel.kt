@@ -1,9 +1,10 @@
-package com.example.musicapp.ui.theme.home
+package com.example.musicapp.ui.home
 
 import android.content.ContentResolver
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.musicapp.data.Song
+import com.example.musicapp.utils.Songs
 
 class MainViewModel:ViewModel() {
 
@@ -11,7 +12,7 @@ class MainViewModel:ViewModel() {
     val error= mutableStateOf<String?>(null)
 
     fun loadSongs(contentResolver: ContentResolver){
-        Song.getSongs(contentResolver){
+        Songs.get(contentResolver){
             if (it.isSuccessful)
                 songs.value=it.data!!
             else

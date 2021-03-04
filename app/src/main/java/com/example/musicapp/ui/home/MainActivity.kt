@@ -1,11 +1,9 @@
-package com.example.musicapp.ui.theme.home
+package com.example.musicapp.ui.home
 
 import android.Manifest
-import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -14,10 +12,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
@@ -26,7 +22,7 @@ import com.example.musicapp.utils.PermissionsUtils
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var vm:MainViewModel
+    private lateinit var vm: MainViewModel
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
