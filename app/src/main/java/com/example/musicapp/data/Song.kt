@@ -26,11 +26,16 @@ data class Song(
     }
 
     override fun describeContents(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        TODO("Not yet implemented")
+       dest?.writeString(title)
+       dest?.writeString(artist)
+       dest?.writeValue(duration)
+       dest?.writeValue(id)
+       dest?.writeString(albumArt)
+       dest?.writeString(path)
     }
 
     companion object CREATOR : Parcelable.Creator<Song> {

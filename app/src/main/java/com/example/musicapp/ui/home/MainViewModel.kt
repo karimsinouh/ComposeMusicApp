@@ -10,6 +10,7 @@ class MainViewModel:ViewModel() {
 
     val songs= mutableStateOf(mutableListOf<Song>())
     val error= mutableStateOf<String?>(null)
+    val song= mutableStateOf<Song?>(null)
 
     fun loadSongs(contentResolver: ContentResolver){
         Songs.get(contentResolver){
@@ -23,6 +24,10 @@ class MainViewModel:ViewModel() {
 
     fun setError(it:String?){
         error.value=it
+    }
+
+    fun setSong(_song:Song){
+        song.value=_song
     }
 
 }

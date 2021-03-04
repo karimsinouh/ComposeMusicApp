@@ -10,13 +10,14 @@ import com.example.musicapp.utils.*
 import com.example.musicapp.utils.ServiceUtils.getNotification
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class PlayerService:LifecycleService() {
 
-    @Inject lateinit var player:ExoPlayer
+    @Inject lateinit var player:SimpleExoPlayer
 
     private val songs= mutableListOf<Song>()
     private var firstPlay=true
@@ -27,13 +28,13 @@ class PlayerService:LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-
+        val temp=firstPlay
 
         when(intent?.action){
 
             START_ACTION->{
                 if (firstPlay){
-                    firstPlay=true
+                    firstPlay=false
                     songs.addAll(intent.getParcelableArrayListExtra<Song>(PLAYLIST_EXTRA) as ArrayList<Song>)
                     start()
                 }else{
@@ -54,7 +55,7 @@ class PlayerService:LifecycleService() {
         }
 
         val bitmap=BitmapFactory.decodeResource(resources, R.drawable.disc)
-        val notification= getNotification(this,player.isPlaying,bitmap)
+        val notification= getNotification(this,if(temp) true else player.isPlaying,bitmap)
 
         val position=findCurrentPosition()
 
@@ -92,5 +93,6 @@ class PlayerService:LifecycleService() {
     private fun stop() {
         player.stop()
         player.release()
+        stopSelf()
     }
 }
