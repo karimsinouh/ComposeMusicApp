@@ -16,8 +16,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.musicapp.R
+import com.example.musicapp.composables.Drawer
 import com.example.musicapp.composables.SongItem
 import com.example.musicapp.data.Song
 import com.example.musicapp.ui.theme.MusicAppTheme
@@ -25,9 +25,6 @@ import com.example.musicapp.utils.*
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), Player.EventListener,
@@ -44,7 +41,10 @@ class MainActivity : AppCompatActivity(), Player.EventListener,
         setContent {
             MusicAppTheme {
 
-                Scaffold {
+                Scaffold(
+                    drawerContent = { Drawer(headerImage = R.drawable.disc) },
+                    topBar = {}
+                ){
                     Body(list = vm.songs.value)
                 }
 
@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity(), Player.EventListener,
                     onPlay = {play(it.id!!)},
                     onPause={player.pause()}
                 )
+                Divider()
             }
         }
 
