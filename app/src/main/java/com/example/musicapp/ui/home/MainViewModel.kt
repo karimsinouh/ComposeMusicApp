@@ -11,6 +11,7 @@ class MainViewModel:ViewModel() {
     val songs= mutableStateOf(mutableListOf<Song>())
     val error= mutableStateOf<String?>(null)
     val currentSongId= mutableStateOf<Long?>(null)
+    val isPlaying= mutableStateOf(false)
 
     fun loadSongs(contentResolver: ContentResolver){
         Songs.get(contentResolver){
@@ -36,6 +37,19 @@ class MainViewModel:ViewModel() {
             if (s.id==id) song=s
         }
         return song!!
+    }
+
+    fun getItemPosition(id:Long):Int{
+        var position=0
+        for (i in 0 until songs.value.size){
+            if (id==songs.value[i].id)
+                position=i
+        }
+        return position
+    }
+
+    fun setPlayingState(playing: Boolean) {
+        isPlaying.value=playing
     }
 
 }

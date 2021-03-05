@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.musicapp.R
 import com.example.musicapp.composables.SongItem
 import com.example.musicapp.data.Song
@@ -24,6 +25,9 @@ import com.example.musicapp.utils.*
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), Player.EventListener,
@@ -49,19 +53,13 @@ class MainActivity : AppCompatActivity(), Player.EventListener,
 
         vm=ViewModelProvider(this).get(MainViewModel::class.java)
 
-        if (PermissionsUtils.hasPermission(this))
+        if (PermissionsUtils.hasPermission(this)){
             vm.loadSongs(contentResolver)
-        else {
+            setupPlayer()
+        } else {
             vm.setError("Your permission is required")
             askForPermission()
         }
-
-        player=SimpleExoPlayer.Builder(this).build()
-
-        player.addListener(this)
-
-        playerNotificationManager= PlayerNotificationManager(this, NOTIFICATION_CHANNEL_ID, 1, this)
-
 
     }
 
@@ -70,13 +68,28 @@ class MainActivity : AppCompatActivity(), Player.EventListener,
 
         LazyColumn{
             items(list){
-                SongItem(it,vm.currentSongId,{player.play()},{player.pause()})
+                SongItem(
+                    it,
+                    vm.currentSongId,
+                    vm.isPlaying.value,
+                    onPlay = {play(it.id!!)},
+                    onPause={player.pause()}
+                )
             }
         }
 
-        player.clearMediaItems()
+    }
 
-        val mediaItems=list.map {
+    private fun setupPlayer(){
+        player=SimpleExoPlayer.Builder(this).build()
+
+        player.addListener(this)
+
+        playerNotificationManager= PlayerNotificationManager(this, NOTIFICATION_CHANNEL_ID, 1, this)
+
+        playerNotificationManager.setPlayer(player)
+
+        val mediaItems=vm.songs.value.map {
             MediaItem.Builder()
                 .setMediaMetadata(MediaMetadata.Builder().setTitle(it.title).build())
                 .setMediaId(it.id.toString())
@@ -86,9 +99,20 @@ class MainActivity : AppCompatActivity(), Player.EventListener,
 
         player.setMediaItems(mediaItems)
         player.prepare()
-        playerNotificationManager.setPlayer(player)
 
     }
+
+    private fun play(id:Long) =if (vm.currentSongId.value==id){
+        //resume
+        player.play()
+    }else{
+        //play new
+        val index=vm.getItemPosition(id)
+        player.seekTo(index,C.TIME_UNSET)
+        player.play()
+    }
+
+
 
     private fun askForPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -103,6 +127,11 @@ class MainActivity : AppCompatActivity(), Player.EventListener,
         player.release()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        stop()
+    }
+
     override fun onPlayerError(error: ExoPlaybackException) {
         super.onPlayerError(error)
         vm.setError(error.message)
@@ -111,6 +140,11 @@ class MainActivity : AppCompatActivity(), Player.EventListener,
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         super.onMediaItemTransition(mediaItem, reason)
         vm.setCurrentSongId(mediaItem?.mediaId?.toLong()!!)
+    }
+
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        super.onIsPlayingChanged(isPlaying)
+        vm.setPlayingState(isPlaying)
     }
 
     override fun getCurrentContentTitle(player: Player): CharSequence {
