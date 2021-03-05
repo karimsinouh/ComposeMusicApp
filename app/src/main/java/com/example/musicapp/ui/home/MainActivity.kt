@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
 import com.example.musicapp.R
 import com.example.musicapp.composables.Drawer
+import com.example.musicapp.composables.MainAppBar
 import com.example.musicapp.composables.SongItem
 import com.example.musicapp.data.Song
 import com.example.musicapp.ui.theme.MusicAppTheme
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity(), Player.EventListener,
 
                 Scaffold(
                     drawerContent = { Drawer(headerImage = R.drawable.disc) },
-                    topBar = {}
+                    topBar = { MainAppBar()}
                 ){
                     Body(list = vm.songs.value)
                 }

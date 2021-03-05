@@ -3,10 +3,7 @@ package com.example.musicapp.composables
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
@@ -23,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.example.musicapp.data.Song
 import com.example.musicapp.ui.theme.colorBlack
 import com.example.musicapp.ui.theme.colorPrimary
+import com.example.musicapp.ui.theme.colorWhite
 
 @Composable
 fun SongItem(
@@ -142,3 +140,24 @@ fun Drawer(@DrawableRes headerImage:Int){
     }
 }
 
+@Composable
+@Preview
+fun MainAppBar(){
+    TopAppBar(backgroundColor = colorWhite,elevation = 0.dp,content = {
+
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Audiotrack,
+                contentDescription = "")
+            Text(
+                text = "Compose Player",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+            )
+        }
+
+    })
+}
