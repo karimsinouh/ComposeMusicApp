@@ -10,7 +10,7 @@ class MainViewModel:ViewModel() {
 
     val songs= mutableStateOf(mutableListOf<Song>())
     val error= mutableStateOf<String?>(null)
-    val song= mutableStateOf<Song?>(null)
+    val currentSongId= mutableStateOf<Long?>(null)
 
     fun loadSongs(contentResolver: ContentResolver){
         Songs.get(contentResolver){
@@ -26,8 +26,16 @@ class MainViewModel:ViewModel() {
         error.value=it
     }
 
-    fun setSong(_song:Song){
-        song.value=_song
+    fun setCurrentSongId(id:Long){
+        currentSongId.value = id
+    }
+
+    fun getItemById(id:Long):Song{
+        var song:Song?=null
+        for (s in songs.value){
+            if (s.id==id) song=s
+        }
+        return song!!
     }
 
 }
